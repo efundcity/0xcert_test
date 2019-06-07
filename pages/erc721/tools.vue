@@ -49,7 +49,7 @@ export default {
     async getTest() {
       const provider = new MetamaskProvider({
         gasPriceMultiplier: 2.1,
-        sandbox: false
+        sandbox: true
       })
       await provider.enable()
       const isSupported = provider.isSupported()
@@ -67,7 +67,11 @@ export default {
         capabilities: [3, 1]
       }
       console.log(provider)
-      const mutation = await AssetLedger.deploy(provider, recipe)
+      const mutation = await AssetLedger.deploy(provider, recipe).then(
+        mutation => {
+          return mutation.complete() // wait until first confirmation
+        }
+      )
       console.log('mutation:', mutation)
     },
     async connect() {
